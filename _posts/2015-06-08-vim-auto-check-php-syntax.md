@@ -58,7 +58,7 @@ autocmd BufWritePost *.php call CompilePHP()
 ```
 我们将不会看到任何输出。  
 silent !clear 命令帮助我们只看到下一个运行命令的输出。  
-还有一点需要注意的是如果是在终端运行 Vim，在运行完 :silent ! 后需要通过 :redraw! 来修正屏幕输出。GUI Vim 比如 Mac Vim 或者 gVim 则可以不加 redraw! 语句。
+还有一点需要注意，如果是在终端运行 Vim，运行完 :silent ! 后需要通过 :redraw! 来修正屏幕输出。GUI Vim 比如 Mac Vim 或者 gVim 则可以不加 redraw! 语句。
 ###参考文章
 [http://learnvimscriptthehardway.stevelosh.com/chapters/52.html](http://learnvimscriptthehardway.stevelosh.com/chapters/52.html)
 
