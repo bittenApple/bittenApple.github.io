@@ -13,7 +13,7 @@ exclude:
   - "CNAME"
   - "Gemfile"
   - "Gemfile.lock"
-permalink: :title
+permalink: date
 defaults:
   -
     scope:
@@ -27,3 +27,7 @@ defaults:
       type: "posts"
     values:
       layout: "post"
+
+markdown: redcarpet
+redcarpet:
+    extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript"]
