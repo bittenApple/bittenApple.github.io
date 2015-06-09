@@ -1,0 +1,19 @@
+---
+title: Category
+permalink: "category/index.html"
+---
+{% for category in site.categories %}
+    <h3 class="section-header-archive">{{ category | first | upcase }}</h3>
+    <ul>
+    {% for posts in category %}
+        {% for post in posts %}
+            {% if post.url %}
+            <li>
+            <a href="{{ post.url | prepend:site.baseurl}}" class="post-title-archive">{{ post.title }}</a>
+            <small class="text-muted">{{ post.date | date_to_string }}</small>
+            </li>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </ul>
+{% endfor %}

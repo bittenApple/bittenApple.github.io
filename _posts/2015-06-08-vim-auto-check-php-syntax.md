@@ -2,7 +2,7 @@
 layout: post
 title: "Vim 中添加对 PHP 的语法检查"
 description: ""
-category: 
+category:  "Programming"
 comments: true
 tags: [Vim]
 ---
