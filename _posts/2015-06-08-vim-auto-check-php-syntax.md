@@ -3,6 +3,7 @@ layout: post
 title: "Vim中添加对PHP的语法检查"
 description: ""
 category: 
+comments: true
 tags: [Vim]
 ---
 平时在 Vim 中敲代码，难免会出现一些低级的语法错误。如果没有安装 [Syntastic](https://github.com/scrooloose/syntastic) 这类语法检查的插件，在页面刷新或者运行脚本报错后才能发现错误，稍显麻烦。   

@@ -9,9 +9,11 @@ layout: default
 <div class="post-content">
   {{ content }}
 </div>
+<!--
 <div class="post-footer">
   {% include post-footer.html %}
 </div>
+-->
 {% if site.data.theme.show_post_navs %}
   {% if page.previous or page.next %}
     <div class="post-navs row">
@@ -42,3 +44,4 @@ layout: default
     </div>
   {% endif %}
 {% endif %}
+{% include disqus.html %}
