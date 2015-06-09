@@ -63,6 +63,7 @@ $red: #e74c3c;
 $space-xs: $line-height-computed * 1;
 $space-sm: $line-height-computed * 1.5;
 $space-md: $line-height-computed * 2;
+$space-small: $line-height-computed / 2;
 
 h2 {
   margin-top: $line-height-computed * 1.5;
@@ -114,7 +115,7 @@ h3 {
   margin-right: 1em;
 }
 .post-content {
-  margin-bottom: $space-md;
+  margin-bottom: $space-xs;
 }
 .post-content img,
 .post-excerpt-home img,
@@ -124,13 +125,13 @@ h3 {
 .post-footer {
   border-top: 1px solid $gray-lighter;
   padding-top: $space-sm;
-  margin-bottom: $space-md;
+  margin-bottom: $space-small;
 }
 .post-navs {
-  margin-bottom: $space-md;
+  margin-bottom: $space-small;
 }
 .post-nav {
-  margin-bottom: $space-sm;
+  margin-bottom: $space-small;
 }
 .post-title-link {
   margin-top: 0;
