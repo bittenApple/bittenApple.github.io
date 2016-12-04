@@ -30,9 +30,6 @@ If you care about the readability, need to update the time data at phpMyAdmin, u
 If you need larger date range, use DATETIME.
 If you need fractional seconds, use TIMESTAMP or DATETIME.
 
-
-
-
 ## References
 [https://stackoverflow.com/questions/409286/should-i-use-field-datetime-or-timestamp](https://stackoverflow.com/questions/409286/should-i-use-field-datetime-or-timestamp)
 [http://dev.mysql.com/doc/refman/5.7/en/datetime.html](http://dev.mysql.com/doc/refman/5.7/en/datetime.html)  
