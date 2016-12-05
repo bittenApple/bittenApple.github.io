@@ -22,7 +22,7 @@ As for DateTime filed, if the database server timezone setting has to be changed
 
 ## Others
 MySQL supports many date and time functions to manipulate temporal values, which are very handy if you use TIMESTAMP or DATETIME field.   
-I didn't dig into the differences of speed index between these types, some post say INT type is significantly faster than DATETIME. I think the main reason is storage length of INT is shorter than DATETIME, leading to smaller index which is easy to comparing.
+Not having actually benchmarked the speed when index these types, some post say INT type is significantly faster than DATETIME. I think the main reason is storage length of INT is shorter than DATETIME, leading to smaller index which is easy to comparing.
 
 ## Conclusion
 If you don't care about readability when using MySQL client or phpMyAdmin, unsigned INT as time field is a good choice. In fact, it's not that inconvenient to read when using FROM_UNIXTIME function to translate int value to formatted date value, and it's also very easy to communicate with PHP.  
