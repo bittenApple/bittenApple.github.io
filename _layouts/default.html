@@ -5,6 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="baidu-site-verification" content="k9IYKKaQMq" />
+    {% if page.tags %}
+    <meta name="keywords" content="{{ page.tags | join: ',' | escape }}"/>
+    {% else %}
+    <meta name="keywords" content="mjnote.com,bittenApple,马江"/>
+    {% endif %}
+    {% if page.description %}
+    <meta name="description" content="{{ page.description | escape }}"/>
+    {% endif %}
     <link rel="stylesheet" href="{{ "/stylesheets/shiori.css" | prepend:site.baseurl }}">
     <link href='//fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
     <link href='//fonts.googleapis.com/css?family=Merriweather:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
