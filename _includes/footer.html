@@ -1,6 +1,7 @@
 &copy;{{ site.time | date:"%Y" }}.
 Built with <a href="http://jekyllrb.com/">Jekyll</a> and
 <a href="https://github.com/ellekasai/shiori">Shiori Theme</a>.
+{% if jekyll.environment != "local" %}
 <script type="text/javascript">
     var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
     document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0eaf817408d5ce4f826e0ebdb1f6fd1c' type='text/javascript'%3E%3C/script%3E"));
@@ -19,3 +20,4 @@ Built with <a href="http://jekyllrb.com/">Jekyll</a> and
     s.parentNode.insertBefore(bp, s);
 })();
 </script>
+{% endif %}
