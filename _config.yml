@@ -7,6 +7,7 @@ title: "MJNote"
 
 gems:
   - jemoji
+  - jekyll-sitemap
 exclude:
   - "README.md"
   - "CHANGELOG.md"
