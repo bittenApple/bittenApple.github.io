@@ -7,10 +7,9 @@ comments: true
 tags: [Git, Git Internals]
 ---
 
-This post is an attempt to get a better sense of how Git store objects. I am going to build a simple legal Git repository manually.  
-This article assumes basic knowledge about Git internals. I recommend you read the [Git document about it's internals](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects), the document shows how to interact with Git by low level powerful commands, e.g., `cat-file`, `write-tree`, `update-index`. 
+This post is an attempt to get a better sense of how Git store objects. I am going to build a simple legal Git repository manually.  This article assumes basic knowledge about Git internals. I recommend you read the [Git document about it's internals](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects), the document shows how to interact with Git by low level powerful commands, e.g., `cat-file`, `write-tree`, `update-index`. 
 ## The Structure of .git Directory
-First Let's create a simple Git directory to imitate(the Git version is 2.6.3).
+First let's create a simple Git directory to imitate(the Git version is 2.6.3).
 
 ```
 [Steed:~/test/git]$ git init sample
@@ -24,7 +23,7 @@ Initialized empty Git repository in /Users/Steed/test/git/sample/.git/
  create mode 100644 file1
  create mode 100644 file2
 ```
-This repository only contains two files and one commit, let's take a look into the .git directory.
+This repository contains only two files and one commit, let's take a look into the .git directory.
 
 ```
 [Steed:~/test/git/sample]$ tree .git/
@@ -70,9 +69,9 @@ This repository only contains two files and one commit, let's take a look into t
 Let’s go over some of the important files.  
 
 * `COMMIT_EDITMSG `: This is the last commit’s message.
-* `HEAD`: Notice that the uppercase HEAD is different from the lowercase head, mostly it’s probably refs/heads/master or other branch head, sometimes it points to a commit that's not associated with any branches, which is called a detached HEAD.
+* `HEAD`: Notice that the uppercase HEAD is different from the lowercase head in Git, mostly it’s refs/heads/master or other branch head, but sometimes it points to a commit that's not associated with any branches, which is called a detached HEAD.
 * `config`: Configuration file of repository.
-* `index`: A binary file containing current index files for the repository, including the staging and committed files.
+* `index`: This is a binary file that containing current index files for the repository, including the staging and committed files.
 * `hooks`: These files are custom scripts that are executed at certain times when working with Git, such as before or after a commit.
 * `logs`: Contains history for different branches.
 * `objects`: Git internal warehouse of objects.
@@ -80,7 +79,7 @@ Let’s go over some of the important files.
 
 There are four objects under `.git/objects` directory, containing two blob objects, one tree object and one commit object, we will reproduce them manually later.
 ## Create the Blob Object
-Let's init a empty Git directory with same two files.
+Let's init an empty Git directory with the same two files.
 
 ```
 [Steed:~/test/git]$ cd manually
@@ -92,13 +91,13 @@ Let's init a empty Git directory with same two files.
 file1
 file2
 ```
-The form of a blob object:
+The form of a blob object is:
 
 ```
 blob [content size]\0[raw content]
 ```
-Git constructs every a object started with a header, in this case a blob, the header starts with 'blob' plaintext, then the size of raw file and finally a null byte. The last part is the raw file content. Git hashes the content to get the sha1 value of the object. Then Git compress the content with zlib and store it into the file with the path according to the sha1.
-I write a simple Python script `blob.py` under the `manually` folder to generate the blob objects, which accepts the raw files as argument, here's the code:
+Git constructs every object started with a header, in this case a blob, the header starts with 'blob' plaintext, then the size of raw file and finally a null byte. The last part is the raw file content. Git hashes the content to get the sha1 value of the object. Then Git compresses it with zlib and store into the `.git/objects/` directory with the path according to the sha1.
+I write a simple Python script `blob.py` under the `manually` folder to generate the blob objects, which accepts the raw files as argument, here is the code:
 
 ```python
 import hashlib
@@ -135,20 +134,20 @@ foo
 bar
 ```
 ## Create the Tree Object
-Tree object is a little confusing. We could use `git ls-tree` command to print the content of a tree commit in a readable format, let's run it under the former sample project to see the tree object content.
+Tree object is a little confusing, we could use `git ls-tree` command to print the content of a tree commit in a readable format, let's run it under the former sample project and what's in the tree object.
 
 ```
 [Steed:~/test/git/sample]$ git ls-tree 2cb7c
 100644 blob 257cc5642cb1a054f08cc83f2d943e56fd3ebe99	file1
 100644 blob 5716ca5987cbf97d6bb54920bea6adde242d87e6	file2
 ```
-Each line of the output contains the file mode, object type, object sha1 and the file name. Notice that the character between sha1 and file name is tab. But this's not how a tree object is saved, Git does more processing.
+Each line of the output contains file mode, object type, object sha1 and file name. Notice that the character between sha1 and file name is tab. But this's not how a tree object is saved, Git does some more work.
 The format of a tree storage object:
 
 ```
 tree [content size]\0[mode] [Entries having reference to other trees and blobs]]
 ```
-The format of each entry having references to other trees and blobs:
+And the format of each entry having references to other trees and blobs:
 
 ```
 [mode] [file/folder name]\0[sha1 of object]
@@ -169,7 +168,6 @@ def write_object(sha1, store):
     p = p.write_bytes(store)
 
 store = b''
-
 tree_data = '''\
 100644 blob 257cc5642cb1a054f08cc83f2d943e56fd3ebe99	file1
 100644 blob 5716ca5987cbf97d6bb54920bea6adde242d87e6	file2\
@@ -193,7 +191,7 @@ write_object(tree_sha1, store)
 ```
 
 ## Create the Commit Object
-The stored format of commit object is almost the same with the `git cat-file` command output. Let's run it under the former sample repository:
+The format of commit object is almost the same with the `git cat-file` command output. Let's run it under the former sample repository:
 
 ```
 [Steed:~/test/git/sample]$ git cat-file -p 2cb7c
@@ -207,11 +205,11 @@ The output is
 
 * The tree commit
 * (There should be one or two parent commit sha1 if not first commit)
-* The author info (Including the name, email, timestamp, even the timezone info!)
+* The author info (Including the name, email, timestamp, even the timezone!)
 * The committer info
-* The commit message
+* The message of commit
 
-Git add the header for a commit object:
+Git adds the header for a commit object:
 
 ```
 commit [content size]\0[the aforementioned output]
@@ -253,7 +251,7 @@ Put it under `manully` repository and run it, then all objects to imitate are ge
 .git/objects/57/16ca5987cbf97d6bb54920bea6adde242d87e6
 .git/objects/f9/c36476895b0f9a475dfbaeb492332c63c148ec
 ```
-Besides, we should fix the content of `.git/refs/heads/master` file, which tells Git the head commit of master, and reset the Git index info.
+Besides, we should fix the content of `.git/refs/heads/master` file, which tells Git the head commit of master. At last we should reset the Git index.
 
 ```
 [Steed:~/test/git/manually]$ mkdir -p .git/refs/heads
@@ -262,7 +260,7 @@ Besides, we should fix the content of `.git/refs/heads/master` file, which tells
 HEAD is now at 2cb7c65 First commit
 
 ```
-Let's run `git status` and `git log` commands and Git looks fine(the python scripts are still untracked)
+Let's run `git status` and `git log` commands to check, It seems that the Git works fine(the python scripts are still untracked)
 
 ```
 [Steed:~/test/git/manually]$ git log
