@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "InnoDB Engine Isolation Levels with SQL examples"
+title: "InnoDB Engine Isolation Levels with SQL Examples"
 description: ""
 category: "Programming" 
 comments: true
