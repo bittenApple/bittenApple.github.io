@@ -6,7 +6,7 @@ category: "Programming"
 comments: true
 tags: [MySQL, DDL, gh-ost]
 ---
-[Gh-ost](https://github.com/github/gh-ost) 是 GitHub 开源的 MySQL online DDL 工具。虽然从[一开源](https://githubengineering.com/gh-ost-github-s-online-migration-tool-for-mysql/)便有所关注，但是最近才在生产环境使用该工具。
+[Gh-ost](https://github.com/github/gh-ost) 是 GitHub 开源的 MySQL online DDL 工具。虽然从一[开源](https://githubengineering.com/gh-ost-github-s-online-migration-tool-for-mysql/)便有所关注，但是最近才在生产环境使用该工具。
 
 ## 常见的 DDL 方式
 在业务快速迭代的开发场景中，频繁的数据库表结构变更是不可避免的事情，比如增加索引和字段。如果使用 MySQL 的 alter 语句，MySQL 首先会生成原始表的拷贝，在该临时表上进行 DDL 更新，完成后，删除原始表，rename 临时表。操作临时表期间 DDL session 会对整张表加上读锁，阻塞其它 session 的写操作；在最后的 rename 阶段，会对表加上写锁，阻塞其它所有操作。如果表很小，大小只有几十 MB，阻塞时间可以忽略；但若表数据很大，阻塞时间尝尝是应用无法忍受的。尤其在最后的 rename 阶段，涉及到删除原始表的操作，如果表很大，删除时间比较长，整张表的读写操作都是被阻塞的。  
