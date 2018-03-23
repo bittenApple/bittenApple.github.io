@@ -11,7 +11,7 @@ tags: [MySQL, DDL, gh-ost]
 ## 常见的 DDL 方式
 在业务快速迭代的开发场景中，频繁的数据库表结构变更是不可避免的事情，比如增加索引和字段。如果使用 MySQL 的 alter 语句，MySQL 首先会生成原始表的拷贝，在该临时表上进行 DDL 更新，完成后，删除原始表，rename 临时表。操作临时表期间 DDL session 会对整张表加上读锁，阻塞其它 session 的写操作；在最后的 rename 阶段，会对表加上写锁，阻塞其它所有操作。如果表很小，大小只有几十 MB，阻塞时间可以忽略；但若表数据很大，阻塞时间尝尝是应用无法忍受的。尤其在最后的 rename 阶段，涉及到删除原始表的操作，如果表很大，删除时间比较长，整张表的读写操作都是被阻塞的。  
 
-MySQL 5.6 开始引入了 Online DDL 支持，但是在 alter 过程的开始和结束还是会 block 所有的读写操作，并且不能覆盖所有的 DDL 种类。此外操作过程中不能控制速率，可能会引起较大的读写延迟；如果中途中断的话，也会有较长时间的回滚操作。
+MySQL 5.6 开始引入了 Online DDL 支持，但是在 alter 过程的开始和结束还是会 block 所有的读写操作，并且不能覆盖所有的 DDL 种类。此外操作过程中不能控制速率，可能会引起较大的读写延迟；如果中途中断的话，也会有较长时间的回滚操作。另外在主从环境中，MySQL Online DDL 必须操作完 mater 后才能开始对 slave 的 DDL。
 
 所以在生产环境中经常会引入第三方的 Online Schema Migration 工具。比较出名的是 Percona 的 [pt-online-schema-change](https://www.percona.com/doc/percona-toolkit/2.2/pt-online-schema-change.html) 和 Facebook 的 [Facebook OSC](https://www.facebook.com/notes/mysql-at-facebook/online-schema-change-for-mysql/430801045932/)。他们都是基于数据库的 trigger 来实现 online schema migration。以 pt-online-schema-change 为例，DDL 过程包含以下步骤  
 
