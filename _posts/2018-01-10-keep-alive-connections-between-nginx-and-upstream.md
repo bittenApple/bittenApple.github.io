@@ -93,13 +93,11 @@ server {
 
 
 ### 其它
-我们在网上经常会看到内核参数 net.ipv4.tcp_tw_recycle 和 net.ipv4.tcp_tw_reuse 的设置，这两个参数和 HTTP 协议层 keep-alive 连接完全不是一回事，这个两个参数都是为了解决 tcp 连接在关闭后会处于 TIME-WAIT 状态而导致 socket 不能被尽快复用的问题。其中 `net.ipv4.tcp_tw_recycle` 在 Linux 4.12 已经被移除了，并且开启可能会有[问题](http://www.pagefault.info/?p=416)，这里主要说下 `net.ipv4.tcp_tw_reuse`  
+我们在网上经常会看到内核参数 net.ipv4.tcp_tw_recycle 和 net.ipv4.tcp_tw_reuse 的设置，这两个参数和 HTTP 协议层 keep-alive 连接完全不是一回事，它们都是为了解决 tcp 连接在关闭后会处于 TIME-WAIT 状态而导致 socket 不能被尽快复用的问题。其中 `net.ipv4.tcp_tw_recycle` 配置开启可能会有[问题](http://www.pagefault.info/?p=416)，在 Linux 4.12 已经被移除了，这里主要说下 `net.ipv4.tcp_tw_reuse`  
 首先为什么会有 TIME-WAIT 状态呢，主要有两个原因：  
 1. 为了防止接收到延迟的数据包  
-2. 确保远程也关闭了 TPC 连接。主动发起关闭方发送最后一个 ACK 包后处于 TIME-WAIT 状态，如果这个 ACK 包丢失了，被动关闭方由于没有收到最后的 ACK，就知道它发送的 FIN 包或者最后的 ACK 丢失，然后会重发 FIN 请求，这样处于 TIME-WAIT 的一方可以重新发送 ACK 包。
+2. 确保对方也关闭 TPC 连接。主动发起关闭方发送最后一个 ACK 包后处于 TIME-WAIT 状态，如果这个 ACK 包丢失了，被动关闭方由于没有收到最后的 ACK，就知道它发送的 FIN 包或者对方最后的 ACK 丢失，然后会重发 FIN 请求，这样处于 TIME-WAIT 的一方可以重新发送 ACK 包。
 
 RFC 1323 补充了 TCP 规范，它增加了两个字节用于记录 TCP 发送方和接收方最新收到包的时间戳。在开启 ipv4.tcp_tw_reuse 后，如果新的请求时间严格大于当前存在的 TIME-WAIT 状态的连接，内核会选择一个 socket 进行复用。由于记录了时间，针对上面第一个问题，收到过期的包就可以直接抛弃了。至于第二个，如果一个处于 TIME-WAIT 的 socket 被复用后，一旦再收到前面连接另一方的 Fin 包，就会返回一个 RST 包，这也会让另一方跳过 LAST-ACK 状态，完成连接的关闭。
 
-上面的描述不直观，这篇[博客](https://vincent.bernat.im/en/blog/2014-tcp-time-wait-state-linux)写的非常详细，强烈建议阅读。
-
-
+上面的叙述不够直观，这篇[博客](https://vincent.bernat.im/en/blog/2014-tcp-time-wait-state-linux)写的非常详细，强烈建议阅读。
