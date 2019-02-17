@@ -6,7 +6,7 @@ category:
 comments: true
 tags: [Golang, socket programming, epoll]
 ---
-过去一年公司经历了服务端技术栈从 PHP 向 Golang 的转型，前不久笔者作了一次内部分享。本文是这次分享的记录，内容偏科普，主要包括以下几点
+过去一年公司经历了服务端技术栈从 PHP 向 Golang 的转型，前不久笔者作了一次内部分享。本文是这次分享的记录，内容偏科普，主要包括以下两点
 
 * 介绍 Linux Socket 编程和 IO 多路复用(IO Multiplexing)
 * Go 调度器和对网络 IO 的封装
