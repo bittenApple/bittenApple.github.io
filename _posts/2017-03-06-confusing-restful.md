@@ -26,12 +26,12 @@ REST(Representational state transfer) 是一种 API 设计风格，按照笔者�
 ## WEB 框架对 GET 请求不提供 CSRF 保护
 [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery) 是一种危害很大的攻击方法，攻击者通过伪装成用户身份完成攻击操作，Web 开发中对于敏感操作一定要开启对 CSRF 攻击的防护。
 
-然而 WEB 框架一般对 GET 请求不提供 CSRF 保护，比如 [Django](https://github.com/django/django/blob/86de930f413e0ad902e11d78ac988e6743202ea6/django/middleware/csrf.py#L212) 和 [Rails](https://github.com/rails/rails/blob/bc4781583d9db237dd928b01743c6db7596a36b3/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L269)。在平时的开发过程中，难免会有一些敏感数据，你并不希望泄漏。需要获取敏感数据的时候，你应该使用 GET 请求，但是这就会有被 CSRF 攻击的风险，笔者在这种情况下，不得不改为使用 POST 请求获取数据。
+然而 WEB 框架一般对 GET 请求不提供 CSRF 保护，比如 [Django](https://github.com/django/django/blob/86de930f413e0ad902e11d78ac988e6743202ea6/django/middleware/csrf.py#L212) 和 [Rails](https://github.com/rails/rails/blob/bc4781583d9db237dd928b01743c6db7596a36b3/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L269)。在平时的开发过程中，难免会有一些敏感数据，我们并不希望泄漏。因为是读数据，RESTful 的 api 应该使用 GET 请求，但是这就会有被 CSRF 攻击的风险，笔者在这种情况下，不得不改为使用 POST 请求获取数据。
 
 ## 有时候遵守 REST 的设计会提高复杂度
 我们假设有下面的需求，一个 WIKI 系统中，每一篇文章可以被用户编辑，用户的第 n 次编辑会得到 n 个积分。  
 
-现在需要提供一个更新指文章的 API。因为已经知道了具体的资源，我们应该使用 PUT 请求，请求可能长这样 `curl -X PUT https://example.com/post/:id -d 'content'`。但是 PUT 请求应该是幂等的，也就是重复该请求应该有相同效果，而每次编辑得到的积分却不一样。这时候我们不得不拆分 API，在发完更新文章的请求后，再进行改变积分的操作。
+现在需要提供一个更新指定文章的 API。因为已经知道了具体的资源，我们应该使用 PUT 请求，请求可能长这样 `curl -X PUT https://example.com/post/:id -d 'content'`。但是 PUT 请求应该是幂等的，也就是重复该请求应该有相同效果，而每次编辑得到的积分却不一样。这时候我们不得不拆分 API，在发完更新文章的请求后，再进行改变积分的操作。
 
 在上文已经提到的分页场景中，按照严格的 REST 设计，应该先请求第一页信息，其它的分页信息通过结果的 Link header 中获取，这无疑也比通过后端框架的模板引擎直接渲染出来要麻烦很多。
 
