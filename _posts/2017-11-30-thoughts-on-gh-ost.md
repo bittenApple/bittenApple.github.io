@@ -38,7 +38,7 @@ gh-ost 的一大卖点就是 triggerless，它通过监听主从同步的 binlog
 
 相较于它方式，gh-ost 只需要拷贝原表数据和重播 binlog，原表的读写不受影响。整个migration 过程可以随时暂停（MySQL online DDL 和基于 trigger 的工具都是不支持的），因为只需要记录 binlong 的执行位置即可。gh-ost 还提供充分的流量监控和控制方式，并且支持在 slave 上进行测试。  
 
-不过 gh-ost 要求主从同步方式必须是 Statement Based Replication，不支持 Mixed  和 SBR 方法，要知道 SBR 是一种效率不算高的同步方式。如果主从的 binlog 已经是 SBR 的，它会要求一台 slave 开启 SBR 的 binlog。
+不过 gh-ost 要求主从同步方式必须是 Row Based Replication，不支持 Mixed  和 SBR 方法，要知道 SBR 是一种效率不算高的同步方式。如果主从的 binlog 已经是 SBR 的，它会要求一台 slave 开启 RBR 的 binlog。
 
 gh-ost migration 最后的 cut-over 阶段也是一个亮点，它的表切换是原子的。实现方式有点 tricky，基于 MySQL 内部实现，rename 的 block 优先级是高于其它 block 操作的，有兴趣可以浏览最后一个 reference 链接。
 
